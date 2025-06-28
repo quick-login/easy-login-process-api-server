@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'co.kr.easy-login'
-version = '0.0.1-SNAPSHOT'
+version = 'BETA'
 
 java {
 	toolchain {
