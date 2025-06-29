@@ -1,11 +1,14 @@
 package co.kr.easylogin.easylogin.kakao.controller;
 
 import co.kr.easylogin.easylogin.kakao.service.KakaoAuthService;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -22,5 +25,22 @@ public class KakaoAuthController {
     public RedirectView kakaoLogin(@PathVariable(name = "appId") Long appId) {
         String kakaoAuthorizeUrl = kakaoAuthService.createKakaoAuthorizeUrl(appId);
         return new RedirectView(kakaoAuthorizeUrl);
+    }
+
+    @GetMapping("/process/{appId}")
+    public String kakaoLoginProcess(@PathVariable(name = "appId") Long appId,
+                                    @RequestParam(name = "code", required = false) String code,
+                                    @RequestParam(name = "error", required = false) String error,
+                                    @RequestParam(name = "error_description", required = false) String errorDescription,
+                                    @RequestParam(name = "state", required = false) String state) { //state 는 아직 지원 X
+
+        if(error != null) {
+            Map<String, String> result = new HashMap<>();
+            result.put("error", error);
+            result.put("error_description", errorDescription);
+            return result.toString();
+        }
+
+        return kakaoAuthService.kakaoAuthorizeProcess(appId, code);
     }
 }
