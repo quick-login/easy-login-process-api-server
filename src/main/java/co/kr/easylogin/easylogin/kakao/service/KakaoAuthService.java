@@ -1,5 +1,7 @@
 package co.kr.easylogin.easylogin.kakao.service;
 
+import co.kr.easylogin.easylogin.error.BusinessException;
+import co.kr.easylogin.easylogin.error.ErrorCode;
 import co.kr.easylogin.easylogin.kakao.domain.KakaoBizApp;
 import co.kr.easylogin.easylogin.kakao.dto.KakaoAuthTokenRequest;
 import co.kr.easylogin.easylogin.kakao.dto.KakaoAuthTokenResponse;
@@ -56,8 +58,8 @@ public class KakaoAuthService {
         Long remainCount = kakaoBizApp.getMember().getRemainCount();
         log.info("{}-{} : API 호출 잔여 횟수 : {}", kakaoBizApp.getAppName(), kakaoBizApp.getAppId(), remainCount);
         if (remainCount <= 0) {
-            log.info("{}-{} : API 호출 잔여 횟수 부족", kakaoBizApp.getAppName(), kakaoBizApp.getAppId());
-            throw new IllegalArgumentException("API 호출 잔여 횟수");
+            log.error("{}-{} : API 호출 잔여 횟수 부족", kakaoBizApp.getAppName(), kakaoBizApp.getAppId());
+            throw new BusinessException(ErrorCode.USER_ENOUGH_REMAIN_COUNT);
         }
     }
 
