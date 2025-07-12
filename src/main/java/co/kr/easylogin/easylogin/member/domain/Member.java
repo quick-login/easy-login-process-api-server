@@ -17,4 +17,8 @@ public class Member {
     private String name;
 
     private Long remainCount;
+
+    public void useRemainCount() {
+        this.remainCount = remainCount - 1;
+    }
 }

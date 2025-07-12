@@ -33,5 +33,5 @@ public class KakaoBizApp {
     private String restKey;
 
     // 최종 결과값 리다이렉트 시켜줄 url
-    private String redirectUrl;
+    private String requestUrl;
 }

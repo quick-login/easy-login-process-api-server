@@ -6,6 +6,7 @@ import co.kr.easylogin.easylogin.kakao.domain.KakaoBizApp;
 import co.kr.easylogin.easylogin.kakao.dto.KakaoAuthTokenRequest;
 import co.kr.easylogin.easylogin.kakao.dto.KakaoAuthTokenResponse;
 import co.kr.easylogin.easylogin.kakao.repository.KakaoBizAppRepository;
+import co.kr.easylogin.easylogin.util.RestUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.servlet.view.RedirectView;
 
 @Service
 @Slf4j
@@ -24,6 +26,7 @@ public class KakaoAuthService {
 
     private final KakaoBizAppRepository kakaoBizAppRepository;
     private final RestClient restClient;
+    private final RestUtil restUtil;
 
     @Value("${kakao.server_url}")
     private String serverUrl;
@@ -66,18 +69,18 @@ public class KakaoAuthService {
     /**
      * 카카오 로그인 프로세스 진행
      */
-    public String kakaoAuthorizeProcess(Long appId, String code) {
+    @Transactional
+    public RedirectView kakaoAuthorizeProcess(Long appId, String code) {
         KakaoBizApp kakaoBizApp =
             kakaoBizAppRepository.findByAppId(appId)
-                                 .orElseThrow(() -> new IllegalArgumentException("AppId 비즈앱에 등록된 아이디가 없음"));
+                                 .orElseThrow(() -> new IllegalArgumentException("카카오 비즈앱에 등록된 AppId가 없음"));
 
         validateRemainCount(kakaoBizApp);
         KakaoAuthTokenResponse kakaoAuthTokenResponse = kakaoAuthorizeGetToken(kakaoBizApp, code);
-        log.info(kakaoAuthTokenResponse.toString());
 
         String kakaoUserInfo = kakaoAuthorizeGetUserInfo(kakaoAuthTokenResponse);
-        log.info(kakaoUserInfo);
-        return kakaoUserInfo;
+        kakaoBizApp.getMember().useRemainCount();
+        return restUtil.resultSendForKakaoBizApp(kakaoBizApp, kakaoUserInfo);
     }
 
     /**
