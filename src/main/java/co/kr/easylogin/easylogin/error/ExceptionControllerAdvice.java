@@ -17,4 +17,11 @@ public class ExceptionControllerAdvice {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(value = Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception exception) {
+        ErrorCode errorCode = ErrorCode.UNDEFINED_EASY_LOGIN_SERVER_ERROR;
+        ErrorResponse errorResponse = new ErrorResponse(errorCode.getCode(), errorCode.getMessage());
+        log.error("Undefined EasyLogin Server Error", exception);
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

@@ -39,7 +39,7 @@ public class KakaoAuthService {
         StringBuilder sb = new StringBuilder();
         KakaoBizApp kakaoBizApp =
             kakaoBizAppRepository.findByAppId(appId)
-                                 .orElseThrow(() -> new IllegalArgumentException("AppId 비즈앱에 등록된 아이디가 없음"));
+                                 .orElseThrow(() -> new BusinessException(ErrorCode.UNDEFINED_KAKAO_APP_INFO));
 
         validateRemainCount(kakaoBizApp);
 
@@ -73,7 +73,7 @@ public class KakaoAuthService {
     public RedirectView kakaoAuthorizeProcess(Long appId, String code) {
         KakaoBizApp kakaoBizApp =
             kakaoBizAppRepository.findByAppId(appId)
-                                 .orElseThrow(() -> new IllegalArgumentException("카카오 비즈앱에 등록된 AppId가 없음"));
+                                 .orElseThrow(() -> new BusinessException(ErrorCode.UNDEFINED_KAKAO_APP_INFO));
 
         validateRemainCount(kakaoBizApp);
         KakaoAuthTokenResponse kakaoAuthTokenResponse = kakaoAuthorizeGetToken(kakaoBizApp, code);
