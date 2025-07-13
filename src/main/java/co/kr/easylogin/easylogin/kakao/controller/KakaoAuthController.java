@@ -1,8 +1,6 @@
 package co.kr.easylogin.easylogin.kakao.controller;
 
 import co.kr.easylogin.easylogin.kakao.service.KakaoAuthService;
-import java.util.HashMap;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,12 +33,9 @@ public class KakaoAuthController {
                                     @RequestParam(name = "error_description", required = false) String errorDescription,
                                     @RequestParam(name = "state", required = false) String state) { //state 는 아직 지원 X
 
-//        if(error != null) {
-//            Map<String, String> result = new HashMap<>();
-//            result.put("error", error);
-//            result.put("error_description", errorDescription);
-//            return new RedirectView()
-//        }
+        if(error != null) {
+            kakaoAuthService.kakaoAuthErrorCheck(error, errorDescription);
+        }
 
         return kakaoAuthService.kakaoAuthorizeProcess(appId, code);
     }
