@@ -8,15 +8,12 @@ import java.util.Base64;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
 import org.springframework.web.servlet.view.RedirectView;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class RestUtil {
-
-    private final RestClient restClient;
 
     public RedirectView resultSendForKakaoBizApp(KakaoBizApp kakaoBizApp, String kakaoUserInfo) {
 
@@ -33,7 +30,13 @@ public class RestUtil {
         } catch (JsonProcessingException e) {
             log.error(e.getMessage());
         }
-
+        successKakaoLoginProcess(kakaoBizApp);
         return redirectView;
+    }
+
+    public void successKakaoLoginProcess(KakaoBizApp kakaoBizApp) {
+        kakaoBizApp.getMember().useRemainCount();
+        log.info("카카오 로그인 데이터 전송 성공 : {} - {} : API 호출 회수 차감 : {}", kakaoBizApp.getAppName(), kakaoBizApp.getAppId(),
+                 kakaoBizApp.getMember().getRemainCount());
     }
 }

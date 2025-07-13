@@ -43,15 +43,12 @@ public class KakaoAuthService {
 
         validateRemainCount(kakaoBizApp);
 
-        String kakaoAuthorizeUrl = sb.append("https://kauth.kakao.com/oauth/authorize")
+        return sb.append("https://kauth.kakao.com/oauth/authorize")
                                      .append("?client_id=").append(kakaoBizApp.getRestKey())
                                      .append("&redirect_uri=").append(serverUrl).append("/api/v1/kakao/process/")
                                      .append(kakaoBizApp.getAppId())
                                      .append("&response_type=code")
                                      .toString();
-
-        log.info("Kakao authorize url: {}", kakaoAuthorizeUrl);
-        return kakaoAuthorizeUrl;
     }
 
     /**
@@ -79,7 +76,6 @@ public class KakaoAuthService {
         KakaoAuthTokenResponse kakaoAuthTokenResponse = kakaoAuthorizeGetToken(kakaoBizApp, code);
 
         String kakaoUserInfo = kakaoAuthorizeGetUserInfo(kakaoAuthTokenResponse);
-        kakaoBizApp.getMember().useRemainCount();
         return restUtil.resultSendForKakaoBizApp(kakaoBizApp, kakaoUserInfo);
     }
 
@@ -115,6 +111,13 @@ public class KakaoAuthService {
                   .header(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded;charset=utf-8")
                   .retrieve()
                   .body(String.class);
+    }
+
+    /**
+     * 카카오 로그인 에러 체크
+     */
+    public void kakaoAuthErrorCheck(String error, String errorDescription) {
+        log.error("error : {} - {}", error, errorDescription);
     }
 
 }
