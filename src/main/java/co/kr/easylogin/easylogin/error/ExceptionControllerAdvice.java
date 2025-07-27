@@ -1,6 +1,5 @@
 package co.kr.easylogin.easylogin.error;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,6 @@ public class ExceptionControllerAdvice {
     public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException exception) {
         ErrorCode errorCode = exception.getErrorCode();
         ErrorResponse errorResponse = new ErrorResponse(errorCode.getCode(), errorCode.getMessage());
-        sendSlack(errorResponse, exception);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
@@ -46,7 +44,7 @@ public class ExceptionControllerAdvice {
         String text = "이지로그인 소셜로그인 프로세싱 서버에서 오류 발생\n"
                       + "오류코드 : " + errorResponse.getErrorCode()
                       + "\n메시지 : " + errorResponse.getErrorMessage()
-                      + "\n상세 익셉션 : " + Arrays.toString(exception.getStackTrace());
+                      + "\n상세 익셉션 : " + exception.getMessage();
 
         Map<String, String> payload = new HashMap<>();
         payload.put("text", text);
