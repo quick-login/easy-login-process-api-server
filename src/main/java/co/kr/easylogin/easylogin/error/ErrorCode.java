@@ -14,6 +14,9 @@ public enum ErrorCode {
 
     //G- 구글 에러
 
+    // 사용자 입력 에러
+    INVALID_INPUT("E4000", "유효하지 않은 입력값입니다."),
+
     //E- 이지로그인 서버 에러
     UNDEFINED_EASY_LOGIN_SERVER_ERROR("E5000", "정의되지 않은 서버 에러"),
     EASY_LOGIN_KAKAO_USER_INFO_JSON_PARSING_ERROR("E5001", "카카오 사용자 정보 JSON 파싱 오류");
