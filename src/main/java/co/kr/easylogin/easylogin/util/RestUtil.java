@@ -1,6 +1,6 @@
 package co.kr.easylogin.easylogin.util;
 
-import co.kr.easylogin.easylogin.kakao.domain.KakaoBizApp;
+import co.kr.easylogin.easylogin.kakao.domain.KakaoApp;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,7 +15,7 @@ import org.springframework.web.servlet.view.RedirectView;
 @Slf4j
 public class RestUtil {
 
-    public RedirectView resultSendForKakaoBizApp(KakaoBizApp kakaoBizApp, String kakaoUserInfo) {
+    public RedirectView resultSendForKakaoBizApp(KakaoApp kakaoApp, String kakaoUserInfo) {
 
         RedirectView redirectView = new RedirectView();
         try {
@@ -25,16 +25,16 @@ public class RestUtil {
 
             // Base64 인코딩
             String base64Encoded = Base64.getEncoder().encodeToString(jsonString.getBytes());
-            redirectView.setUrl(kakaoBizApp.getRequestUrl() + "?encode=" + base64Encoded);
+            redirectView.setUrl(kakaoApp.getRedirectUrl() + "?encode=" + base64Encoded);
 
         } catch (JsonProcessingException e) {
             log.error(e.getMessage());
         }
-        successKakaoLoginProcess(kakaoBizApp);
+        successKakaoLoginProcess(kakaoApp);
         return redirectView;
     }
 
-    public void successKakaoLoginProcess(KakaoBizApp kakaoBizApp) {
+    public void successKakaoLoginProcess(KakaoApp kakaoBizApp) {
         kakaoBizApp.getMember().useRemainCount();
         log.info("카카오 로그인 데이터 전송 성공 : {} - {} : API 호출 회수 차감 : {}", kakaoBizApp.getAppName(), kakaoBizApp.getAppId(),
                  kakaoBizApp.getMember().getRemainCount());

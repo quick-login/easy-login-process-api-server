@@ -1,6 +1,6 @@
 package co.kr.easylogin.easylogin.kakao.dto;
 
-import co.kr.easylogin.easylogin.kakao.domain.KakaoBizApp;
+import co.kr.easylogin.easylogin.kakao.domain.KakaoApp;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -26,7 +26,7 @@ public class KakaoAuthTokenRequest {
         this.code = code;
     }
 
-    public static KakaoAuthTokenRequest of(KakaoBizApp kakaoBizApp, String code, String serverUrl) {
+    public static KakaoAuthTokenRequest of(KakaoApp kakaoBizApp, String code, String serverUrl) {
         return KakaoAuthTokenRequest.builder()
                                     .client_id(kakaoBizApp.getRestKey())
                                     .redirect_uri(serverUrl + "/api/v1/kakao/process/" + kakaoBizApp.getAppId())

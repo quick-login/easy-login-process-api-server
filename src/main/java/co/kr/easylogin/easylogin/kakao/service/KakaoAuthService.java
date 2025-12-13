@@ -2,10 +2,10 @@ package co.kr.easylogin.easylogin.kakao.service;
 
 import co.kr.easylogin.easylogin.error.BusinessException;
 import co.kr.easylogin.easylogin.error.ErrorCode;
-import co.kr.easylogin.easylogin.kakao.domain.KakaoBizApp;
+import co.kr.easylogin.easylogin.kakao.domain.KakaoApp;
 import co.kr.easylogin.easylogin.kakao.dto.KakaoAuthTokenRequest;
 import co.kr.easylogin.easylogin.kakao.dto.KakaoAuthTokenResponse;
-import co.kr.easylogin.easylogin.kakao.repository.KakaoBizAppRepository;
+import co.kr.easylogin.easylogin.kakao.repository.KakaoAppRepository;
 import co.kr.easylogin.easylogin.util.RestUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ import org.springframework.web.servlet.view.RedirectView;
 @Transactional(readOnly = true)
 public class KakaoAuthService {
 
-    private final KakaoBizAppRepository kakaoBizAppRepository;
+    private final KakaoAppRepository kakaoBizAppRepository;
     private final RestClient restClient;
     private final RestUtil restUtil;
 
@@ -37,7 +37,7 @@ public class KakaoAuthService {
      */
     public String createKakaoAuthorizeUrl(Long appId) {
         StringBuilder sb = new StringBuilder();
-        KakaoBizApp kakaoBizApp =
+        KakaoApp kakaoBizApp =
             kakaoBizAppRepository.findByAppId(appId)
                                  .orElseThrow(() -> new BusinessException(ErrorCode.UNDEFINED_KAKAO_APP_INFO));
 
@@ -54,7 +54,7 @@ public class KakaoAuthService {
     /**
      * 소셜로그인 API 호출 잔여횟수 확인
      */
-    private void validateRemainCount(KakaoBizApp kakaoBizApp) {
+    private void validateRemainCount(KakaoApp kakaoBizApp) {
         Long remainCount = kakaoBizApp.getMember().getRemainCount();
         log.info("{}-{} : API 호출 잔여 횟수 : {}", kakaoBizApp.getAppName(), kakaoBizApp.getAppId(), remainCount);
         if (remainCount <= 0) {
@@ -68,7 +68,7 @@ public class KakaoAuthService {
      */
     @Transactional
     public RedirectView kakaoAuthorizeProcess(Long appId, String code) {
-        KakaoBizApp kakaoBizApp =
+        KakaoApp kakaoBizApp =
             kakaoBizAppRepository.findByAppId(appId)
                                  .orElseThrow(() -> new BusinessException(ErrorCode.UNDEFINED_KAKAO_APP_INFO));
 
@@ -83,7 +83,7 @@ public class KakaoAuthService {
      * 토큰 발급요청
      * POST https://kauth.kakao.com/oauth/token
      */
-    private KakaoAuthTokenResponse kakaoAuthorizeGetToken(KakaoBizApp kakaoBizApp, String code) {
+    private KakaoAuthTokenResponse kakaoAuthorizeGetToken(KakaoApp kakaoBizApp, String code) {
         KakaoAuthTokenRequest kakaoAuthTokenRequest = KakaoAuthTokenRequest.of(kakaoBizApp, code, serverUrl);
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
