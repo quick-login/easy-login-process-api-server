@@ -1,8 +1,8 @@
 package co.kr.easylogin.easylogin.util;
 
+import co.kr.easylogin.easylogin.kakao.data.KakaoUserInfo;
 import co.kr.easylogin.easylogin.kakao.domain.KakaoApp;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Base64;
 import lombok.RequiredArgsConstructor;
@@ -15,14 +15,15 @@ import org.springframework.web.servlet.view.RedirectView;
 @Slf4j
 public class RestUtil {
 
-    public RedirectView resultSendForKakaoBizApp(KakaoApp kakaoApp, String kakaoUserInfo) {
+    public RedirectView resultSendForKakaoBizApp(KakaoApp kakaoApp, KakaoUserInfo kakaoUserInfo, String state) {
 
         RedirectView redirectView = new RedirectView();
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonNode = objectMapper.readTree(kakaoUserInfo);
-            String jsonString = objectMapper.writeValueAsString(jsonNode);
+            kakaoUserInfo.setState(state);
 
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonString = objectMapper.writeValueAsString(kakaoUserInfo);
+            System.out.println("jsonString = " + jsonString);
             // Base64 인코딩
             String base64Encoded = Base64.getEncoder().encodeToString(jsonString.getBytes());
             redirectView.setUrl(kakaoApp.getRedirectUrl() + "?encode=" + base64Encoded);

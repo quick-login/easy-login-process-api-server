@@ -2,6 +2,7 @@ package co.kr.easylogin.easylogin.kakao.service;
 
 import co.kr.easylogin.easylogin.error.BusinessException;
 import co.kr.easylogin.easylogin.error.ErrorCode;
+import co.kr.easylogin.easylogin.kakao.data.KakaoUserInfo;
 import co.kr.easylogin.easylogin.kakao.domain.KakaoApp;
 import co.kr.easylogin.easylogin.kakao.dto.KakaoAuthTokenRequest;
 import co.kr.easylogin.easylogin.kakao.dto.KakaoAuthTokenResponse;
@@ -83,8 +84,8 @@ public class KakaoAuthService {
         validateRemainCount(kakaoBizApp);
         KakaoAuthTokenResponse kakaoAuthTokenResponse = kakaoAuthorizeGetToken(kakaoBizApp, code);
 
-        String kakaoUserInfo = kakaoAuthorizeGetUserInfo(kakaoAuthTokenResponse);
-        return restUtil.resultSendForKakaoBizApp(kakaoBizApp, kakaoUserInfo);
+        KakaoUserInfo kakaoUserInfo = kakaoAuthorizeGetUserInfo(kakaoAuthTokenResponse);
+        return restUtil.resultSendForKakaoBizApp(kakaoBizApp, kakaoUserInfo, state);
     }
 
     /**
@@ -112,13 +113,13 @@ public class KakaoAuthService {
      * 사용자 정보 가져오기
      * GET/POST https://kapi.kakao.com/v2/user/me
      */
-    private String kakaoAuthorizeGetUserInfo(KakaoAuthTokenResponse kakaoAuthTokenResponse) {
+    private KakaoUserInfo kakaoAuthorizeGetUserInfo(KakaoAuthTokenResponse kakaoAuthTokenResponse) {
         return restClient.get()
-                  .uri("https://kapi.kakao.com/v2/user/me")
-                  .header(HttpHeaders.AUTHORIZATION, "Bearer " + kakaoAuthTokenResponse.getAccess_token())
-                  .header(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded;charset=utf-8")
-                  .retrieve()
-                  .body(String.class);
+                         .uri("https://kapi.kakao.com/v2/user/me")
+                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + kakaoAuthTokenResponse.getAccess_token())
+                         .header(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded;charset=utf-8")
+                         .retrieve()
+                         .body(KakaoUserInfo.class);
     }
 
     /**
