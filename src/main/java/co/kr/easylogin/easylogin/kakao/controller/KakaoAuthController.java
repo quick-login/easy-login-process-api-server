@@ -20,8 +20,9 @@ public class KakaoAuthController {
 
     // 카카오 로그인창 호출
     @GetMapping("/{appId}")
-    public RedirectView kakaoLogin(@PathVariable(name = "appId") Long appId) {
-        String kakaoAuthorizeUrl = kakaoAuthService.createKakaoAuthorizeUrl(appId);
+    public RedirectView kakaoLogin(@PathVariable(name = "appId") Long appId, @RequestParam(name = "state",
+                                                                                           required = false) String state) {
+        String kakaoAuthorizeUrl = kakaoAuthService.createKakaoAuthorizeUrl(appId, state);
         return new RedirectView(kakaoAuthorizeUrl);
     }
 

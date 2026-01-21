@@ -7,6 +7,8 @@ import co.kr.easylogin.easylogin.kakao.dto.KakaoAuthTokenRequest;
 import co.kr.easylogin.easylogin.kakao.dto.KakaoAuthTokenResponse;
 import co.kr.easylogin.easylogin.kakao.repository.KakaoAppRepository;
 import co.kr.easylogin.easylogin.util.RestUtil;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,19 +37,22 @@ public class KakaoAuthService {
      * 카카오 인가코드 받기 url 생성
      * GET https://kauth.kakao.com/oauth/authorize
      */
-    public String createKakaoAuthorizeUrl(Long appId) {
+    public String createKakaoAuthorizeUrl(Long appId, String state) {
         StringBuilder sb = new StringBuilder();
         KakaoApp kakaoBizApp =
             kakaoBizAppRepository.findByAppId(appId)
                                  .orElseThrow(() -> new BusinessException(ErrorCode.UNDEFINED_KAKAO_APP_INFO));
 
         validateRemainCount(kakaoBizApp);
+        // 반드시 인코딩을 수행합니다.
+        String encodedState = URLEncoder.encode(state, StandardCharsets.UTF_8);
 
         return sb.append("https://kauth.kakao.com/oauth/authorize")
                                      .append("?client_id=").append(kakaoBizApp.getRestKey())
                                      .append("&redirect_uri=").append(serverUrl).append("/api/v1/kakao/process/")
                                      .append(kakaoBizApp.getAppId())
                                      .append("&response_type=code")
+                                     .append("&state=").append(encodedState)
                                      .toString();
     }
 
