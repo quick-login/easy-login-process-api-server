@@ -22,6 +22,7 @@ public class KakaoAuthController {
     @GetMapping("/{appId}")
     public RedirectView kakaoLogin(@PathVariable(name = "appId") Long appId, @RequestParam(name = "state",
                                                                                            required = false) String state) {
+        log.info("state : {}", state);
         String kakaoAuthorizeUrl = kakaoAuthService.createKakaoAuthorizeUrl(appId, state);
         return new RedirectView(kakaoAuthorizeUrl);
     }

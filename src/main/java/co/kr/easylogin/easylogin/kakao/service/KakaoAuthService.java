@@ -44,16 +44,19 @@ public class KakaoAuthService {
                                  .orElseThrow(() -> new BusinessException(ErrorCode.UNDEFINED_KAKAO_APP_INFO));
 
         validateRemainCount(kakaoBizApp);
-        // 반드시 인코딩을 수행합니다.
-        String encodedState = URLEncoder.encode(state, StandardCharsets.UTF_8);
 
-        return sb.append("https://kauth.kakao.com/oauth/authorize")
-                                     .append("?client_id=").append(kakaoBizApp.getRestKey())
-                                     .append("&redirect_uri=").append(serverUrl).append("/api/v1/kakao/process/")
-                                     .append(kakaoBizApp.getAppId())
-                                     .append("&response_type=code")
-                                     .append("&state=").append(encodedState)
-                                     .toString();
+        StringBuilder ap = sb.append("https://kauth.kakao.com/oauth/authorize")
+                                 .append("?client_id=").append(kakaoBizApp.getRestKey())
+                                 .append("&redirect_uri=").append(serverUrl).append("/api/v1/kakao/process/")
+                                 .append(kakaoBizApp.getAppId())
+                                 .append("&response_type=code");
+
+        if (state != null && !state.isEmpty()) {
+            // state 값 존재시 인코딩하여 추가
+            String encodedState = URLEncoder.encode(state, StandardCharsets.UTF_8);
+            ap.append("&state=").append(encodedState);
+        }
+        return ap.toString();
     }
 
     /**
