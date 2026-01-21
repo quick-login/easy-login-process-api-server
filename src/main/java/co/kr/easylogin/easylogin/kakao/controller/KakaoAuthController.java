@@ -39,6 +39,6 @@ public class KakaoAuthController {
             kakaoAuthService.kakaoAuthErrorCheck(error, errorDescription);
         }
 
-        return kakaoAuthService.kakaoAuthorizeProcess(appId, code);
+        return kakaoAuthService.kakaoAuthorizeProcess(appId, code, state);
     }
 }

@@ -75,7 +75,7 @@ public class KakaoAuthService {
      * 카카오 로그인 프로세스 진행
      */
     @Transactional
-    public RedirectView kakaoAuthorizeProcess(Long appId, String code) {
+    public RedirectView kakaoAuthorizeProcess(Long appId, String code, String state) {
         KakaoApp kakaoBizApp =
             kakaoBizAppRepository.findByAppId(appId)
                                  .orElseThrow(() -> new BusinessException(ErrorCode.UNDEFINED_KAKAO_APP_INFO));
